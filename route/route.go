@@ -22,4 +22,6 @@ func Staff(e *echo.Echo) {
 func Public(e *echo.Echo) {
 	g := e.Group("/api/v1/student/public")
 	g.GET("/health", handler.HealthCheck)
+	g.GET("/test", handler.TestPublic)
+
 }

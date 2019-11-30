@@ -1,0 +1,8 @@
+MongoDB:
+  URI: "mongodb+srv://triluong:rbjjgfVYeYNR033a@cluster0-0rlhg.mongodb.net/test?retryWrites=true&w=majority"
+  Host: "triluongfasdf"
+  Username: "fasdf"
+  Password: "fasdf"
+
+JWTSecret:
+  JWTKey: "mysecret"
