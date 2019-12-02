@@ -44,10 +44,18 @@ func connect() {
 		log.Println("Error")
 	}
 
-	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
 	err = client.Connect(ctx)
-	ctx, _ = context.WithTimeout(context.Background(), 2*time.Second)
+	if err != nil {
+		log.Println("Error")
+	}
+
+	ctx, cancel = context.WithTimeout(context.Background(), 2*time.Second)
 	err = client.Ping(ctx, readpref.Primary())
+	if err != nil {
+		log.Println("Error")
+	}
 
 	Client = client
 	// fmt.Println("Connected to MongoDB!")
