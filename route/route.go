@@ -16,8 +16,9 @@ func Private(e *echo.Echo) {
 }
 
 func Staff(e *echo.Echo) {
-	// g := e.Group("/api/v1/student/staff")
-	// g.PUT("/student", handler.UpdateStudent)
+	g := e.Group("/api/v1/student/staff")
+	g.GET("/student/:studentID", handler.GetStudentById)
+	g.PATCH("/student/:studentID", handler.UpdateStudent)
 }
 
 func Public(e *echo.Echo) {

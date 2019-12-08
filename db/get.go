@@ -10,11 +10,11 @@ import (
 )
 
 type Student struct {
-	ID        *primitive.ObjectID `json:"id" bson:"_id,omitempty"`
-	FirstName string              `json:"first_name" bson:"first_name"`
-	LastName  string              `json:"last_name" bson:"last_name"`
-	Age       int                 `json:"age" bson:"age"`
-	Email     string              `json:"email" bson:"email"`
+	ID        primitive.ObjectID `json:"id" bson:"_id,omitempty"`
+	FirstName string             `json:"first_name" bson:"first_name"`
+	LastName  string             `json:"last_name" bson:"last_name"`
+	Age       int                `json:"age" bson:"age"`
+	Email     string             `json:"email" bson:"email"`
 }
 
 func GetStudents() (*[]Student, error) {
@@ -36,4 +36,21 @@ func GetStudents() (*[]Student, error) {
 		return nil, err
 	}
 	return &students, nil
+}
+
+func GetStudentByID(id string) (interface{}, error) {
+	collection := Client.Database("nc-student").Collection("students")
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+	newId, err := primitive.ObjectIDFromHex(id)
+	if err != nil {
+		return nil, err
+	}
+	filter := bson.M{"_id": newId}
+	result := Student{}
+	err = collection.FindOne(ctx, filter).Decode(&result)
+	if err != nil {
+		return nil, err
+	}
+	return result, nil
 }

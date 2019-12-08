@@ -1,20 +1,34 @@
 package handler
 
-// func UpdateStudent(c echo.Context) error {
-// 	type Student struct {
-// 		FirstName string `json:"first_name"`
-// 		LastName  string `json:"last_name"`
-// 		Age       int    `json:"age"`
-// 		Email     string `json:"email"`
-// 	}
+import (
+	"net/http"
 
-// 	collection := db.Client.Database("nc-student").Collection("student")
-// 	ctx, _ := context.WithTimeout(context.Background(), 5*time.Second)
-// 	var student Student
-// 	res, err := collection.InsertOne(ctx, student)
-// 	if err != nil {
-// 		log.Faltalf(err)
-// 	}
+	"github.com/Triluong/nc-student/db"
+	"github.com/labstack/echo/v4"
+)
 
-// 	return c.JSON()
-// }
+func UpdateStudent(c echo.Context) error {
+	var student db.Student
+	if err := c.Bind(&student); err != nil {
+		return c.JSON(http.StatusBadRequest, err)
+	}
+	id := c.Param("studentID")
+	// if err := c.Bind(&student); err != nil {
+	// 	return c.JSON(http.StatusBadRequest, err)
+	// }
+
+	err := db.UpdateStudent(id, student)
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, err)
+	}
+	return c.JSON(http.StatusOK, student)
+}
+
+func GetStudentById(c echo.Context) error {
+	id := c.Param("studentID")
+	student, err := db.GetStudentByID(id)
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, err)
+	}
+	return c.JSON(http.StatusOK, student)
+}
