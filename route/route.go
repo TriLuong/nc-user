@@ -16,12 +16,15 @@ func Private(e *echo.Echo) {
 }
 
 func Staff(e *echo.Echo) {
-
+	// g := e.Group("/api/v1/student/staff")
+	// g.PUT("/student", handler.UpdateStudent)
 }
 
 func Public(e *echo.Echo) {
 	g := e.Group("/api/v1/student/public")
 	g.GET("/health", handler.HealthCheck)
 	g.GET("/test", handler.TestPublic)
+	g.GET("/student", handler.GetAllStudents)
+	g.POST("/student", handler.AddStudent)
 
 }
