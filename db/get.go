@@ -11,10 +11,10 @@ import (
 
 type Student struct {
 	ID        *primitive.ObjectID `json:"id" bson:"_id,omitempty"`
-	FirstName string              `json:"first_name"`
-	LastName  string              `json:"last_name"`
-	Age       int                 `json:"age"`
-	Email     string              `json:"email"`
+	FirstName string              `json:"first_name" bson:"first_name"`
+	LastName  string              `json:"last_name" bson:"last_name"`
+	Age       int                 `json:"age" bson:"age"`
+	Email     string              `json:"email" bson:"email"`
 }
 
 func GetStudents() (*[]Student, error) {

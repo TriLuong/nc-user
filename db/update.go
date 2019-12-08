@@ -2,19 +2,17 @@ package db
 
 import (
 	"context"
-	"fmt"
-	"log"
 	"time"
 )
 
-func AddStudent(student Student) {
+func AddStudent(student interface{}) error {
 	collection := Client.Database("nc-student").Collection("students")
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 
-	InsertResult, error := collection.InsertOne(ctx, student)
+	_, error := collection.InsertOne(ctx, student)
 	if error != nil {
-		log.Fatalln(error)
+		return error
 	}
-	fmt.Println(InsertResult)
+	return nil
 }

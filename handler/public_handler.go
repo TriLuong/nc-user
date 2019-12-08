@@ -25,11 +25,14 @@ func GetAllStudents(c echo.Context) error {
 }
 
 func AddStudent(c echo.Context) error {
-	var student db.Student
+	var student interface{}
 	if err := c.Bind(&student); err != nil {
 		return c.JSON(http.StatusBadRequest, err)
 	}
 
-	db.AddStudent(student)
+	err := db.AddStudent(student)
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, err)
+	}
 	return c.JSON(http.StatusOK, student)
 }
