@@ -5,14 +5,16 @@ import (
 	"log"
 	"time"
 
+	"go.mongodb.org/mongo-driver/bson/primitive"
 	"gopkg.in/mgo.v2/bson"
 )
 
 type Student struct {
-	FirstName string `json:"first_name"`
-	LastName  string `json:"last_name"`
-	Age       int    `json:"age"`
-	Email     string `json:"email"`
+	ID        *primitive.ObjectID `json:"id" bson:"_id,omitempty"`
+	FirstName string              `json:"first_name"`
+	LastName  string              `json:"last_name"`
+	Age       int                 `json:"age"`
+	Email     string              `json:"email"`
 }
 
 func GetStudents() (*[]Student, error) {
