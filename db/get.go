@@ -5,9 +5,9 @@ import (
 	"encoding/json"
 	"fmt"
 	"log"
+	"strconv"
 	"time"
 
-	"go.mongodb.org/mongo-driver/bson/primitive"
 	"gopkg.in/mgo.v2/bson"
 )
 
@@ -33,19 +33,19 @@ func GetStudents() (*[]Student, error) {
 	return &students, nil
 }
 
-func GetStudentByID(id string) (interface{}, error) {
+func GetStudentByID(id string) (Student, error) {
 	collection := Client.Database("nc-student").Collection("students")
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
-	newId, err := primitive.ObjectIDFromHex(id)
-	if err != nil {
-		return nil, err
+	idInt, error := strconv.Atoi(id)
+	if error != nil {
+		return Student{}, error
 	}
-	filter := bson.M{"_id": newId}
-	result := Student{}
-	err = collection.FindOne(ctx, filter).Decode(&result)
+	filter := bson.M{"id": idInt}
+	var result Student
+	err := collection.FindOne(ctx, filter).Decode(&result)
 	if err != nil {
-		return nil, err
+		return Student{}, err
 	}
 	return result, nil
 }
