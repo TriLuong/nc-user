@@ -10,7 +10,7 @@ import (
 	"gopkg.in/mgo.v2/bson"
 )
 
-func AddStudent(student Student) error {
+func AddStudent(student Student) (Student, error) {
 	collection := Client.Database("nc-student").Collection("students")
 
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
@@ -18,12 +18,12 @@ func AddStudent(student Student) error {
 
 	result, error := collection.InsertOne(ctx, student)
 	if error != nil {
-		return error
+		return Student{}, error
 	}
 	newID, error := createId("studentID")
 	if error != nil {
 		log.Println(error)
-		return error
+		return Student{}, error
 	}
 	filter := bson.M{"_id": result.InsertedID}
 	update := bson.M{"$set": bson.M{"id": newID}}
@@ -31,10 +31,11 @@ func AddStudent(student Student) error {
 	// options := options.UpdateOptions{Upsert: &upsert}
 	resultUpdate := collection.FindOneAndUpdate(ctx, filter, update)
 	if resultUpdate.Err() != nil {
-		return resultUpdate.Err()
+		return Student{}, resultUpdate.Err()
 	}
-
-	return nil
+	var studentResult Student
+	resultUpdate.Decode(&studentResult)
+	return studentResult, nil
 }
 
 func createId(name string) (int, error) {

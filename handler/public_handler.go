@@ -30,11 +30,11 @@ func AddStudent(c echo.Context) error {
 		return c.JSON(http.StatusBadRequest, err)
 	}
 
-	err := db.AddStudent(student)
+	result, err := db.AddStudent(student)
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, err)
 	}
-	return c.JSON(http.StatusOK, student)
+	return c.JSON(http.StatusOK, result)
 }
 
 func SearchStudentSimple(c echo.Context) error {
