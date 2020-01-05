@@ -7,7 +7,7 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
-func UpdateStudent(c echo.Context) error {
+func UpdateStudentByID(c echo.Context) error {
 	var student db.Student
 	if err := c.Bind(&student); err != nil {
 		return c.JSON(http.StatusBadRequest, err)
@@ -17,11 +17,11 @@ func UpdateStudent(c echo.Context) error {
 	// 	return c.JSON(http.StatusBadRequest, err)
 	// }
 
-	err := db.UpdateStudent(id, student)
+	result, err := db.UpdateStudentByID(id, student)
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, err)
 	}
-	return c.JSON(http.StatusOK, student)
+	return c.JSON(http.StatusOK, result)
 }
 
 func GetStudentById(c echo.Context) error {

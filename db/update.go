@@ -3,9 +3,9 @@ package db
 import (
 	"context"
 	"log"
+	"strconv"
 	"time"
 
-	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo/options"
 	"gopkg.in/mgo.v2/bson"
 )
@@ -69,20 +69,20 @@ func createId(name string) (int, error) {
 	return counter.ID, nil
 }
 
-func UpdateStudent(id string, student Student) error {
+func UpdateStudentByID(id string, student Student) (Student, error) {
 	collection := Client.Database("nc-student").Collection("students")
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
-
-	newId, error := primitive.ObjectIDFromHex(id)
+	idInt, error := strconv.Atoi(id)
 	if error != nil {
-		return error
+		return Student{}, error
 	}
-	filter := bson.M{"_id": newId}
+	var result Student
+	filter := bson.M{"id": idInt}
 	update := bson.M{"$set": student}
-	_, error = collection.UpdateOne(ctx, filter, update)
+	error = collection.FindOneAndUpdate(ctx, filter, update).Decode(&result)
 	if error != nil {
-		return error
+		return Student{}, error
 	}
-	return nil
+	return result, nil
 }
