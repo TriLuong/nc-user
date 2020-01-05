@@ -3,6 +3,7 @@ package db
 import (
 	"context"
 	"log"
+	"strconv"
 	"time"
 
 	"go.mongodb.org/mongo-driver/mongo/options"
@@ -75,6 +76,31 @@ func HashPassword(pwd string) (string, error) {
 	hash, err := bcrypt.GenerateFromPassword([]byte(pwd), bcrypt.MinCost)
 	if err != nil {
 		log.Println(err)
+		return "", err
 	}
 	return string(hash), nil
+}
+
+func UpdateUserByID(id string, user UserUpdate) (UserUpdate, error) {
+
+	intID, error := strconv.Atoi(id)
+	if error != nil {
+		log.Println(error)
+		return UserUpdate{}, error
+	}
+
+	collection := Client.Database("nc-user").Collection("users")
+
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+	filter := bson.M{"id": intID}
+	update := bson.M{"$set": user}
+
+	var result UserUpdate
+	error = collection.FindOneAndUpdate(ctx, filter, update).Decode(&result)
+	if error != nil {
+		log.Println(error)
+		return UserUpdate{}, nil
+	}
+	return result, nil
 }

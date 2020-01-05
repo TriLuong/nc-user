@@ -16,8 +16,8 @@ func Private(e *echo.Echo) {
 }
 
 func Staff(e *echo.Echo) {
-	// g := e.Group("/api/v1/user/private")
-	// g.PUT("/user", handler.UpdateUser)
+	g := e.Group("/api/v1/user/private")
+	g.PATCH("/user/:userID", handler.UpdateUserByID)
 }
 
 func Public(e *echo.Echo) {
