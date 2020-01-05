@@ -18,6 +18,7 @@ func Private(e *echo.Echo) {
 func Staff(e *echo.Echo) {
 	g := e.Group("/api/student/v1/staff")
 	g.GET("/student/:studentID", handler.GetStudentById)
+	g.DELETE("/student/id/:studentID", handler.DeleteStudentById)
 	g.POST("/student", handler.AddStudent)
 }
 

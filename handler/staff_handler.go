@@ -32,3 +32,12 @@ func GetStudentById(c echo.Context) error {
 	}
 	return c.JSON(http.StatusOK, student)
 }
+
+func DeleteStudentById(c echo.Context) error {
+	id := c.Param("studentID")
+	student, err := db.DeleteStudentById(id)
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, err)
+	}
+	return c.JSON(http.StatusOK, student)
+}
