@@ -36,3 +36,15 @@ func AddStudent(c echo.Context) error {
 	}
 	return c.JSON(http.StatusOK, student)
 }
+
+func SearchStudentSimple(c echo.Context) error {
+	var req db.StudentSearchRequest
+	if err := c.Bind(&req); err != nil {
+		return c.JSON(http.StatusBadRequest, err)
+	}
+	students, err := db.SerchStudentSimple(req)
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, err)
+	}
+	return c.JSON(http.StatusOK, students)
+}

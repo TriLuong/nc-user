@@ -16,16 +16,16 @@ func Private(e *echo.Echo) {
 }
 
 func Staff(e *echo.Echo) {
-	g := e.Group("/api/v1/student/staff")
+	g := e.Group("/api/student/v1/staff")
 	g.GET("/student/:studentID", handler.GetStudentById)
 	g.PATCH("/student/:studentID", handler.UpdateStudent)
+	g.POST("/student", handler.AddStudent)
 }
 
 func Public(e *echo.Echo) {
-	g := e.Group("/api/v1/student/public")
+	g := e.Group("/api/student/v1/public")
 	g.GET("/health", handler.HealthCheck)
 	g.GET("/test", handler.TestPublic)
 	g.GET("/student", handler.GetAllStudents)
-	g.POST("/student", handler.AddStudent)
-
+	g.GET("/student/simple", handler.SearchStudentSimple)
 }

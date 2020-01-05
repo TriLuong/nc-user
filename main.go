@@ -9,6 +9,7 @@ import (
 
 	"github.com/Triluong/nc-student/config"
 	"github.com/Triluong/nc-student/db"
+	MyMiddleware "github.com/Triluong/nc-student/middleware"
 	"github.com/Triluong/nc-student/route"
 )
 
@@ -17,6 +18,7 @@ func main() {
 	db.Init()
 	e := echo.New()
 	e.Use(middleware.Recover())
+	e.Use(MyMiddleware.SimpleLogger())
 	route.All(e)
 	log.Println(e.Start(":9090"))
 }
