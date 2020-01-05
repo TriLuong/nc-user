@@ -7,6 +7,7 @@ import (
 
 	"github.com/Triluong/nc-student/config"
 	jwt "github.com/dgrijalva/jwt-go"
+	"golang.org/x/crypto/bcrypt"
 	"gopkg.in/mgo.v2/bson"
 )
 
@@ -111,8 +112,10 @@ func Login(req LoginForm) (LoginResponse, error) {
 		return LoginResponse{}, err
 	}
 
-	if req.Password != result.Password {
-		log.Printf("Password Error")
+	isVerify := comparePasswords(result.Password, req.Password)
+
+	if !isVerify {
+		log.Println("isVerify Error")
 		return LoginResponse{}, err
 	}
 
@@ -145,4 +148,21 @@ func generateToken(creds LoginForm) (string, error) {
 		return "", err
 	}
 	return tokenString, nil
+}
+
+func comparePasswords(hashedPwd string, plainPwd string) bool {
+	// Since we'll be getting the hashed password from the DB it
+	// will be a string so we'll need to convert it to a byte slice
+	// byteHash, error := HashPassword(plainPwd)
+	// if error != nil {
+	// 	log.Print(error)
+	// 	return false
+	// }
+	err := bcrypt.CompareHashAndPassword([]byte(hashedPwd), []byte(plainPwd))
+	if err != nil {
+		log.Println(err)
+		return false
+	}
+
+	return true
 }

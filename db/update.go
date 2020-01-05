@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"go.mongodb.org/mongo-driver/mongo/options"
+	"golang.org/x/crypto/bcrypt"
 	"gopkg.in/mgo.v2/bson"
 )
 
@@ -24,8 +25,14 @@ func Register(user User) (User, error) {
 		log.Println(error)
 		return User{}, error
 	}
+	password, error := HashPassword(user.Password)
+	if error != nil {
+		log.Println(error)
+		return User{}, error
+	}
+
 	filter := bson.M{"_id": result.InsertedID}
-	update := bson.M{"$set": bson.M{"id": newID}}
+	update := bson.M{"$set": bson.M{"id": newID, "password": password}}
 	// upsert := true
 	// options := options.UpdateOptions{Upsert: &upsert}
 	resultUpdate := collection.FindOneAndUpdate(ctx, filter, update)
@@ -64,20 +71,10 @@ func createId(name string) (int, error) {
 	return counter.ID, nil
 }
 
-// func UpdateStudentByID(id string, student Student) (Student, error) {
-// 	collection := Client.Database("nc-user").Collection("users")
-// 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
-// 	defer cancel()
-// 	idInt, error := strconv.Atoi(id)
-// 	if error != nil {
-// 		return Student{}, error
-// 	}
-// 	var result Student
-// 	filter := bson.M{"id": idInt}
-// 	update := bson.M{"$set": student}
-// 	error = collection.FindOneAndUpdate(ctx, filter, update).Decode(&result)
-// 	if error != nil {
-// 		return Student{}, error
-// 	}
-// 	return result, nil
-// }
+func HashPassword(pwd string) (string, error) {
+	hash, err := bcrypt.GenerateFromPassword([]byte(pwd), bcrypt.MinCost)
+	if err != nil {
+		log.Println(err)
+	}
+	return string(hash), nil
+}
