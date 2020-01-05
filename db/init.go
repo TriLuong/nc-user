@@ -22,7 +22,7 @@ func Test() {
 
 func Init() {
 	connect()
-	InsertNumber()
+	// InsertNumber()
 }
 
 func InsertNumber() {

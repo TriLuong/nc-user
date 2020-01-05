@@ -7,44 +7,55 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
-func HealthCheck(c echo.Context) error {
-	return c.String(http.StatusOK, "OK")
-}
+// func HealthCheck(c echo.Context) error {
+// 	return c.String(http.StatusOK, "OK")
+// }
 
-func TestPublic(c echo.Context) error {
-	db.Test()
-	return c.String(http.StatusOK, "TestPublic")
-}
+// func TestPublic(c echo.Context) error {
+// 	db.Test()
+// 	return c.String(http.StatusOK, "TestPublic")
+// }
 
-func GetAllStudents(c echo.Context) error {
-	students, err := db.GetStudents()
-	if err != nil {
-		return c.JSON(http.StatusInternalServerError, err)
+// func GetAllStudents(c echo.Context) error {
+// 	students, err := db.GetStudents()
+// 	if err != nil {
+// 		return c.JSON(http.StatusInternalServerError, err)
+// 	}
+// 	return c.JSON(http.StatusOK, students)
+// }
+
+// func SearchStudentSimple(c echo.Context) error {
+// 	var req db.StudentSearchRequest
+// 	if err := c.Bind(&req); err != nil {
+// 		return c.JSON(http.StatusBadRequest, err)
+// 	}
+// 	students, err := db.SerchStudentSimple(req)
+// 	if err != nil {
+// 		return c.JSON(http.StatusInternalServerError, err)
+// 	}
+// 	return c.JSON(http.StatusOK, students)
+// }
+
+func Login(c echo.Context) error {
+	var req db.LoginForm
+	if err := c.Bind(&req); err != nil {
+		return c.JSON(http.StatusBadRequest, err)
 	}
-	return c.JSON(http.StatusOK, students)
+	loginResponse, error := db.Login(req)
+	if error != nil {
+		return c.JSON(http.StatusInternalServerError, error)
+	}
+	return c.JSON(http.StatusOK, loginResponse)
 }
-
-func AddStudent(c echo.Context) error {
-	var student db.Student
-	if err := c.Bind(&student); err != nil {
+func Register(c echo.Context) error {
+	var user db.User
+	if err := c.Bind(&user); err != nil {
 		return c.JSON(http.StatusBadRequest, err)
 	}
 
-	result, err := db.AddStudent(student)
+	result, err := db.Register(user)
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, err)
 	}
 	return c.JSON(http.StatusOK, result)
-}
-
-func SearchStudentSimple(c echo.Context) error {
-	var req db.StudentSearchRequest
-	if err := c.Bind(&req); err != nil {
-		return c.JSON(http.StatusBadRequest, err)
-	}
-	students, err := db.SerchStudentSimple(req)
-	if err != nil {
-		return c.JSON(http.StatusInternalServerError, err)
-	}
-	return c.JSON(http.StatusOK, students)
 }

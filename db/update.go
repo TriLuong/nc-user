@@ -3,27 +3,26 @@ package db
 import (
 	"context"
 	"log"
-	"strconv"
 	"time"
 
 	"go.mongodb.org/mongo-driver/mongo/options"
 	"gopkg.in/mgo.v2/bson"
 )
 
-func AddStudent(student Student) (Student, error) {
-	collection := Client.Database("nc-student").Collection("students")
+func Register(user User) (User, error) {
+	collection := Client.Database("nc-user").Collection("users")
 
-	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 
-	result, error := collection.InsertOne(ctx, student)
+	result, error := collection.InsertOne(ctx, user)
 	if error != nil {
-		return Student{}, error
+		return User{}, error
 	}
-	newID, error := createId("studentID")
+	newID, error := createId("userID")
 	if error != nil {
 		log.Println(error)
-		return Student{}, error
+		return User{}, error
 	}
 	filter := bson.M{"_id": result.InsertedID}
 	update := bson.M{"$set": bson.M{"id": newID}}
@@ -31,21 +30,17 @@ func AddStudent(student Student) (Student, error) {
 	// options := options.UpdateOptions{Upsert: &upsert}
 	resultUpdate := collection.FindOneAndUpdate(ctx, filter, update)
 	if resultUpdate.Err() != nil {
-		return Student{}, resultUpdate.Err()
+		return User{}, resultUpdate.Err()
 	}
-	var studentResult Student
-	resultUpdate.Decode(&studentResult)
-	return studentResult, nil
+	var userResult User
+	resultUpdate.Decode(&userResult)
+	return userResult, nil
 }
 
 func createId(name string) (int, error) {
-	collection := Client.Database("nc-student").Collection("counters")
+	collection := Client.Database("nc-user").Collection("counters")
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
-	// _, error := collection.InsertOne(ctx, bson.M{"_id": name})
-	// if error != nil {
-	// 	return 0, error
-	// }
 	var counter Counters
 	filter := bson.M{"_id": name}
 	update := bson.M{"$inc": bson.M{"id": 1}}
@@ -69,20 +64,20 @@ func createId(name string) (int, error) {
 	return counter.ID, nil
 }
 
-func UpdateStudentByID(id string, student Student) (Student, error) {
-	collection := Client.Database("nc-student").Collection("students")
-	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
-	defer cancel()
-	idInt, error := strconv.Atoi(id)
-	if error != nil {
-		return Student{}, error
-	}
-	var result Student
-	filter := bson.M{"id": idInt}
-	update := bson.M{"$set": student}
-	error = collection.FindOneAndUpdate(ctx, filter, update).Decode(&result)
-	if error != nil {
-		return Student{}, error
-	}
-	return result, nil
-}
+// func UpdateStudentByID(id string, student Student) (Student, error) {
+// 	collection := Client.Database("nc-user").Collection("users")
+// 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+// 	defer cancel()
+// 	idInt, error := strconv.Atoi(id)
+// 	if error != nil {
+// 		return Student{}, error
+// 	}
+// 	var result Student
+// 	filter := bson.M{"id": idInt}
+// 	update := bson.M{"$set": student}
+// 	error = collection.FindOneAndUpdate(ctx, filter, update).Decode(&result)
+// 	if error != nil {
+// 		return Student{}, error
+// 	}
+// 	return result, nil
+// }
