@@ -10,7 +10,7 @@ import (
 	"gopkg.in/mgo.v2/bson"
 )
 
-func AddStudent(student interface{}) error {
+func AddStudent(student Student) error {
 	collection := Client.Database("nc-student").Collection("students")
 
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
@@ -29,9 +29,9 @@ func AddStudent(student interface{}) error {
 	update := bson.M{"$set": bson.M{"id": newID}}
 	// upsert := true
 	// options := options.UpdateOptions{Upsert: &upsert}
-	_, error = collection.UpdateOne(ctx, filter, update)
-	if error != nil {
-		return error
+	resultUpdate := collection.FindOneAndUpdate(ctx, filter, update)
+	if resultUpdate.Err() != nil {
+		return resultUpdate.Err()
 	}
 
 	return nil
