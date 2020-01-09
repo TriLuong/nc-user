@@ -4,7 +4,7 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/Triluong/nc-student/db"
+	"github.com/Triluong/nc-user/db"
 	"github.com/labstack/echo/v4"
 )
 

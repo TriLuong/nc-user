@@ -1,7 +1,7 @@
 package route
 
 import (
-	"github.com/Triluong/nc-student/handler"
+	"github.com/Triluong/nc-user/handler"
 	"github.com/labstack/echo/v4"
 )
 

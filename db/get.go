@@ -5,7 +5,7 @@ import (
 	"log"
 	"time"
 
-	"github.com/Triluong/nc-student/config"
+	"github.com/Triluong/nc-user/config"
 	jwt "github.com/dgrijalva/jwt-go"
 	"golang.org/x/crypto/bcrypt"
 	"gopkg.in/mgo.v2/bson"

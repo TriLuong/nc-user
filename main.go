@@ -7,10 +7,10 @@ import (
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 
-	"github.com/Triluong/nc-student/config"
-	"github.com/Triluong/nc-student/db"
-	MyMiddleware "github.com/Triluong/nc-student/middleware"
-	"github.com/Triluong/nc-student/route"
+	"github.com/Triluong/nc-user/config"
+	"github.com/Triluong/nc-user/db"
+	MyMiddleware "github.com/Triluong/nc-user/middleware"
+	"github.com/Triluong/nc-user/route"
 )
 
 func main() {
